@@ -77,7 +77,7 @@ def run_register_model(data_path: str, top_n: int):
     )[0]
 
     # Register the best model
-    model_uri = f"runs:/{best_run}/model"
+    model_uri = f"runs:/{best_run.info.run_id}/model"
     mlflow.register_model(model_uri=model_uri, name="best-model-homework-2")
 
 
