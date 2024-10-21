@@ -8,8 +8,7 @@ resource "aws_iam_role" "iam_lambda" {
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": [
-          "lambda.amazonaws.com",
-          "kinesis.amazonaws.com"
+          "lambda.amazonaws.com"
           ]
       },
       "Effect": "Allow",
@@ -31,8 +30,6 @@ resource "aws_iam_policy" "allow_kinesis_processing" {
   "Statement": [
     {
       "Action": [
-        "kinesis:ListShards",
-        "kinesis:ListStreams",
         "kinesis:*"
       ],
       "Resource": "arn:aws:kinesis:*:*:*",
@@ -40,9 +37,6 @@ resource "aws_iam_policy" "allow_kinesis_processing" {
     },
     {
       "Action": [
-        "stream:GetRecord",
-        "stream:GetShardIterator",
-        "stream:DescribeStream",
         "stream:*"
       ],
       "Resource": "arn:aws:stream:*:*:*",
@@ -77,16 +71,6 @@ resource "aws_iam_role_policy" "inline_lambda_policy" {
   ]
 }
 EOF
-}
-
-# IAM for CW
-
-resource "aws_lambda_permission" "allow_cloudwatch_to_trigger_lambda_function" {
-  statement_id  = "AllowExecutionFromCloudWatch"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.kinesis_lambda.function_name
-  principal     = "events.amazonaws.com"
-  source_arn    = var.source_stream_arn
 }
 
 resource "aws_iam_policy" "allow_logging" {
@@ -130,8 +114,6 @@ policy = <<EOF
     {
             "Effect": "Allow",
             "Action": [
-                "s3:ListAllMyBuckets",
-                "s3:GetBucketLocation",
                 "s3:*"
             ],
             "Resource": "*"

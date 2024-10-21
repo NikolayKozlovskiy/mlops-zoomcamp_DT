@@ -1,8 +1,8 @@
 variable "aws_region" {
   description = "AWS region to create resources"
-  default     = "eu-west-1"
+  default     = "eu-central-1"
 }
-
+# serves as a tag
 variable "project_id" {
   description = "project_id"
   default = "mlops-zoomcamp"
@@ -10,6 +10,8 @@ variable "project_id" {
 
 variable "source_stream_name" {
   description = ""
+  # my change
+  default = "ride_events"
 }
 
 variable "output_stream_name" {

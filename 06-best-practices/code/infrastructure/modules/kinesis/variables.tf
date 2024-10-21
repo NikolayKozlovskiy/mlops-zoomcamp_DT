@@ -19,15 +19,15 @@ variable "shard_level_metrics" {
     default     = [
     "IncomingBytes",
     "OutgoingBytes",
-    "OutgoingRecords",
-    "ReadProvisionedThroughputExceeded",
-    "WriteProvisionedThroughputExceeded",
-    "IncomingRecords",
-    "IteratorAgeMilliseconds",
+    # "OutgoingRecords",
+    # "ReadProvisionedThroughputExceeded",
+    # "WriteProvisionedThroughputExceeded",
+    # "IncomingRecords",
+    # "IteratorAgeMilliseconds",
   ]
 }
 
 variable "tags" {
   description = "Tags for kinesis stream"
-    default = "mlops-zoomcamp"
+  default = "mlops-zoomcamp"
 }

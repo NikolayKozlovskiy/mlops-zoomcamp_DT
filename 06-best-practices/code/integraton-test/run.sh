@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# instructs the shell to immediately exit if any command within the script or command sequence returns a non-zero exit status
+# set-e
+
 if [[ -z "${GITHUB_ACTIONS}" ]]; then
   cd "$(dirname "$0")"
 fi
@@ -15,7 +18,7 @@ fi
 
 export PREDICTIONS_STREAM_NAME="ride_predictions"
 
-docker-compose up -d
+docker compose up -d
 
 sleep 5
 
@@ -29,21 +32,20 @@ pipenv run python test_docker.py
 ERROR_CODE=$?
 
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
-
 
 pipenv run python test_kinesis.py
 
 ERROR_CODE=$?
 
 if [ ${ERROR_CODE} != 0 ]; then
-    docker-compose logs
-    docker-compose down
+    docker compose logs
+    docker compose down
     exit ${ERROR_CODE}
 fi
 
 
-docker-compose down
+docker compose down

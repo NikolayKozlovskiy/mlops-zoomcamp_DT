@@ -7,13 +7,15 @@ from pprint import pprint
 import boto3
 from deepdiff import DeepDiff
 
+aws_default_region = os.getenv('AWS_DEFAULT_REGION', 'eu-central-1')
 kinesis_endpoint = os.getenv('KINESIS_ENDPOINT_URL', "http://localhost:4566")
-kinesis_client = boto3.client('kinesis', endpoint_url=kinesis_endpoint)
+kinesis_client = boto3.client('kinesis',region_name=aws_default_region, endpoint_url=kinesis_endpoint)
 
 stream_name = os.getenv('PREDICTIONS_STREAM_NAME', 'ride_predictions')
 shard_id = 'shardId-000000000000'
 
-
+# A shard is a sequence of data records in a stream
+# TRIM_HORIZON (from the oldest record available)
 shard_iterator_response = kinesis_client.get_shard_iterator(
     StreamName=stream_name,
     ShardId=shard_id,

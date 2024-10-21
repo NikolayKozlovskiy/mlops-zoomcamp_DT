@@ -1,16 +1,23 @@
 # Make sure to create state bucket beforehand
 terraform {
   required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.70.0"
+    }
+  }
   backend "s3" {
-    bucket  = "tf-state-mlops-zoomcamp"
+    bucket  = "tf-state-mlops-zoomcamp-nk"
     key     = "mlops-zoomcamp-stg.tfstate"
-    region  = "eu-west-1"
+    region  = "eu-central-1"
     encrypt = true
   }
 }
-
+# very impr
 provider "aws" {
   region = var.aws_region
+
 }
 
 data "aws_caller_identity" "current_identity" {}
@@ -22,13 +29,13 @@ locals {
 # ride_events
 module "source_kinesis_stream" {
   source = "./modules/kinesis"
-  retention_period = 48
-  shard_count = 2
+  retention_period = 24
+  shard_count = 1
   stream_name = "${var.source_stream_name}-${var.project_id}"
   tags = var.project_id
 }
 
-# ride_predictions
+# # ride_predictions
 module "output_kinesis_stream" {
   source = "./modules/kinesis"
   retention_period = 48
@@ -50,7 +57,7 @@ module "ecr_image" {
    account_id = local.account_id
    lambda_function_local_path = var.lambda_function_local_path
    docker_image_local_path = var.docker_image_local_path
-}
+  }
 
 module "lambda_function" {
   source = "./modules/lambda"
@@ -63,19 +70,19 @@ module "lambda_function" {
   source_stream_arn = module.source_kinesis_stream.stream_arn
 }
 
-# For CI/CD
-output "lambda_function" {
-  value     = "${var.lambda_function_name}_${var.project_id}"
-}
+# # For CI/CD
+# output "lambda_function" {
+#   value     = "${var.lambda_function_name}_${var.project_id}"
+# }
 
-output "model_bucket" {
-  value = module.s3_bucket.name
-}
+# output "model_bucket" {
+#   value = module.s3_bucket.name
+# }
 
-output "predictions_stream_name" {
-  value     = "${var.output_stream_name}-${var.project_id}"
-}
+# output "predictions_stream_name" {
+#   value     = "${var.output_stream_name}-${var.project_id}"
+# }
 
-output "ecr_repo" {
-  value = "${var.ecr_repo_name}_${var.project_id}"
-}
+# output "ecr_repo" {
+#   value = "${var.ecr_repo_name}_${var.project_id}"
+# }

@@ -18,7 +18,7 @@ resource null_resource ecr_image {
      docker_file = md5(file(var.docker_image_local_path))
    }
 
-   provisioner "local-exec" {
+   provisioner "local-exec" { 
      command = <<EOF
              aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.region}.amazonaws.com
              cd ../

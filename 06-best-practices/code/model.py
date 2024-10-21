@@ -12,8 +12,8 @@ def get_model_location(run_id):
     if model_location is not None:
         return model_location
 
-    model_bucket = os.getenv('MODEL_BUCKET', 'mlflow-models-alexey')
-    experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '1')
+    model_bucket = os.getenv('MODEL_BUCKET', 'mlflow-bucket-nk')
+    experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '3')
 
     model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/model'
     return model_location
@@ -49,14 +49,16 @@ class ModelService:
 
     def lambda_handler(self, event):
         # print(json.dumps(event))
+        print(f'Event: {event}')
 
         predictions_events = []
 
         for record in event['Records']:
             encoded_data = record['kinesis']['data']
+            print(f'encoded_data: {encoded_data}')
             ride_event = base64_decode(encoded_data)
+            print(f'ride_event: {ride_event}')
 
-            # print(ride_event)
             ride = ride_event['ride']
             ride_id = ride_event['ride_id']
 

@@ -18,8 +18,16 @@ resource "aws_lambda_function" "kinesis_lambda" {
   timeout = 180
 }
 
-# Lambda Invoke & Event Source Mapping:
+# IAM for CW
+resource "aws_lambda_permission" "allow_events_to_trigger_lambda_function" {
+  statement_id  = "AllowExecutionFromEvents"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.kinesis_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = var.source_stream_arn
+}
 
+# Lambda Invoke & Event Source Mapping:
 resource "aws_lambda_function_event_invoke_config" "kinesis_lambda_event" {
   function_name                = aws_lambda_function.kinesis_lambda.function_name
   maximum_event_age_in_seconds = 60
